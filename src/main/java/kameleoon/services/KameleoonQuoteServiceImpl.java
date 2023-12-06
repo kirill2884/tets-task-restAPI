@@ -87,6 +87,7 @@ public class KameleoonQuoteServiceImpl implements KameleoonQuoteService {
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public QuoteDto setLike(Long id) {
 		log.trace("Recived request for like to quote whith id: {}", id);
 		Quote quote = quoteRepo.findById(id).orElse(null);
@@ -101,14 +102,19 @@ public class KameleoonQuoteServiceImpl implements KameleoonQuoteService {
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public QuoteDto setDislike(Long id) {
 		log.trace("Recived request for dislike to quote whith id: {}", id);
 		Quote quote = quoteRepo.findById(id).orElse(null);
 		if (quote != null) {
-			Votes votes = quote.getVotes();
-			votes.incrementDislike();
-			votesRepo.save(votes);
-			log.trace("Dislike to quote whith id: {} added", id);
+			try {
+				Votes votes = quote.getVotes();
+				votes.incrementDislike();
+				votesRepo.save(votes);
+				log.trace("Dislike to quote whith id: {} added", id);
+			} catch (Exception e) {
+				throw new RuntimeException(e.getMessage());
+			}
 		}
 		
 		return Quote.build(quote);
