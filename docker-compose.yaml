@@ -1,15 +1,15 @@
 version: "3"
 services:
-   config-server: 
-       build: 
-          kameleoon   #path to the directory where Dockerfile exists
-       deploy:
-          resources: 
+   kameleoon:
+      build: kameleoon
+      deploy:
+         resources: 
              limits: 
                 cpus: '0.5'
                 memory: 300M
              reservations:
                 cpus: '0.3'
-                memory: 200M
-         
+                memory: 200M    
+      ports: 
+            - 8080:8080
                 
